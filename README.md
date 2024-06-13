@@ -2,7 +2,7 @@
 ## T2V-CompBench dataset
 The T2V-CompBench dataset includes 700 prompts from 7 categories, each with 100 prompts. 
 
-Each category is saved in a .txt file in the ```prompts/``` directory.
+Each category is saved in a text file in the ```prompts/``` directory.
 
 
 ## MLLM-based Evaluation
