@@ -61,7 +61,7 @@ After obtaining the official GroundingDINO code, place the following evaluation 
 
 
 ## Detection-based Evaluation (3D spatial relationships)
-We use Depth Anything + GroundingDINO + SAM to evaluate 3D spatial relationships ("in front of" & "behind").
+We use Depth Anything + GroundingSAM to evaluate 3D spatial relationships ("in front of" & "behind").
 #### 1: Install Requirements
 
 This Evaluation metric is based on the official repositories of Depth Anything and GroundingSAM. You can refer to [Depth Anything's GitHub repository](https://github.com/LiheYoung/Depth-Anything/tree/main) and [GroundingSAM's GitHub repository](https://github.com/IDEA-Research/GroundingDINO/tree/main) for specific environment dependencies and weights.
@@ -83,3 +83,36 @@ After obtaining the official GroundingSAM code, place the following evaluation s
 - `spatial_relationship_3d.py`
   
 ## Tracking-based Evaluation
+We use GroundingSAM + DOT to evaluate motion binding.
+#### 1: Install Requirements
+
+This Evaluation metric is based on the official repositories of GroundingSAM and Dense Optical Tracking. You can refer to [GroundingSAM's GitHub repository](https://github.com/IDEA-Research/GroundingDINO/tree/main) and [Dense Optical Tracking's GitHub repository](https://github.com/16lemoing/dot?tab=readme-ov-file) for specific environment dependencies and weights.
+
+#### 2. Prepare Evaluation Videos
+
+Generate videos of your model using the T2V-CompBench prompts provided in the `prompts` directory. Organize them in the following structure (using the *spatial relationships* category as an example):
+
+```
+../video/motion_binding
+├── 0001.mp4
+├── 0002.mp4
+├── 0003.mp4
+├── 0004.mp4
+...
+└── 0100.mp4
+```
+
+Note: The numerical names of the video files are just to indicate the reading order that matches the order of prompts. You can use other naming conventions that maintain the order (*e.g.* "0.mp4", "1.mpg", *etc.*)
+
+#### 3. Run the Evaluation Codes
+
+After obtaining the official GroundingSAM code, place the following evaluation scripts in the `Grounded-Segment-Anything/` directory:
+
+- `motion_binding_seg.py`
+
+The background and forground segmentation of the 1st frame of the videos will be stored in the `output_motion_binding/` directory.
+
+After obtaining the official DOT code, place the following evaluation scripts in the `dot/` directory, and run them as ordered:
+
+- `motion_binding_foreground.py`
+- `motion_binding_background.py`
