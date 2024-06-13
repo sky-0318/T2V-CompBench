@@ -59,6 +59,17 @@ After obtaining the official GroundingDINO code, place the following evaluation 
 - `spatial_relationship_2d.py`
 - `generative_numeracy.py`
 
+Compute the evaluation metric:
+
+2D spatial relationship: 
+```
+python GroundingDINO/demo/spatial_relationship_2d.py
+```
+
+Generative numeracy:  
+```
+python GroundingDINO/demo/generative_numeracy.py
+```
 
 ## Detection-based Evaluation (3D spatial relationships)
 We use Depth Anything + GroundingSAM to evaluate 3D spatial relationships ("in front of" & "behind").
@@ -81,6 +92,18 @@ The depth images will be stored in the `output_depth/` directory.
 After obtaining the official GroundingSAM code, place the following evaluation scripts in the `Grounded-Segment-Anything/` directory:
 
 - `spatial_relationship_3d.py`
+
+Compute the evaluation metric:
+
+step 1: 
+```
+python Depth-Anything/run_depth.py
+```
+
+step 2: 
+```
+python Grounded-Segment-Anything/spatial_relationship_3d.py
+```
   
 ## Tracking-based Evaluation
 We use GroundingSAM + DOT to evaluate motion binding.
@@ -141,5 +164,5 @@ python dot/python motion_binding_background.py
 
 step 4: 
 ```
-dot/python process.py
+python dot/python process.py
 ```
