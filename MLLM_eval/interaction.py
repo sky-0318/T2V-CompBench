@@ -3,18 +3,14 @@ import torch
 import csv
 import json
 import os
-from PIL import Image
-
 import requests
 from PIL import Image
 from io import BytesIO
 import re
-
 import cv2
 import moviepy.editor as mp
 import numpy as np
 from torchvision.io import write_video
-
 from llava.constants import (
     IMAGE_TOKEN_INDEX,
     DEFAULT_IMAGE_TOKEN,
@@ -33,16 +29,12 @@ from llava.mm_utils import (
 
 
 def extract_frames(video_path, num_frames=16):
-    # Capture the video
     cap = cv2.VideoCapture(video_path)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-
-    # Calculate frame indices to extract
     if total_frames <= num_frames:
         frame_indices = np.arange(total_frames)
     else:
         frame_indices = np.linspace(0, total_frames - 1, num_frames, dtype=int)
-    
     frames = []
     for i in frame_indices:
         cap.set(cv2.CAP_PROP_POS_FRAMES, i)
@@ -52,8 +44,6 @@ def extract_frames(video_path, num_frames=16):
         frames.append(frame)
     cap.release()
     return frames
-
-
 
 def rgb_to_yuv(frame):
     yuv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -71,34 +61,16 @@ def convert_video(input_path, output_path):
 
 def video2img(video_path,frames_dir,question):
     os.makedirs(frames_dir, exist_ok=True)
-
-    # Load the video
     cap = cv2.VideoCapture(video_path)
-
-    # Initialize frame count
     frame_count = 0
-
-    # Loop through each frame in the video
     while True:
-        # Read frame from the video
         ret, frame = cap.read()
-
-        # Check if frame is read correctly
         if not ret:
             break
-
-        # Define the filename for each frame
         frame_filename = os.path.join(frames_dir, f'{question}_{frame_count:06d}.png')
-
-        # Save the frame as a PNG file
         cv2.imwrite(frame_filename, frame)
-        
-        # Increment the frame count
         frame_count += 1
-
-    # Release the video capture object
     cap.release()
-
     print(f"All frames are extracted and saved to {frames_dir}. Total frames: {frame_count}")
 
 
@@ -111,7 +83,6 @@ def merge_grid(image_folder, image_path_list):
     image4 = Image.open(os.path.join(image_folder,image_path_list[3]))
     image5 = Image.open(os.path.join(image_folder,image_path_list[4]))
     image6 = Image.open(os.path.join(image_folder,image_path_list[5]))
-
 
     # Create a new blank image with the desired size
     grid_width = 2 * image1.width
@@ -126,18 +97,15 @@ def merge_grid(image_folder, image_path_list):
     grid_image.paste(image5, (0, 2*image1.height))
     grid_image.paste(image6, (image1.width, 2*image1.height))
 
-    # Save the merged image
     return grid_image 
 
 
 def convert_video_to_frames(video_path):
-    
     if os.path.isdir(video_path): # if video_path is a list of videos
         video = os.listdir(video_path)
     elif os.path.isfile(video_path): # else if video_path is a single video
         video = [os.path.basename(video_path)]
-        video_path = os.path.dirname(video_path)
-        
+        video_path = os.path.dirname(video_path)     
     video.sort()
     print("start converting video to video with 16 frames from path:", video_path)
     for v in video:
@@ -149,22 +117,16 @@ def convert_video_to_frames(video_path):
 
     ## extract frames
     all_vid_frames_dir = os.path.join(os.path.dirname(video_path), "frames", os.path.basename(video_path))
-
-    
     os.makedirs(all_vid_frames_dir, exist_ok=True)
     vid_frames_dir_list = os.listdir(all_vid_frames_dir)
-
     all_vid_dir = output_path
     vid_dir_list = os.listdir(all_vid_dir)
     for vid in vid_dir_list:
-        name = vid.replace(".mp4","")
-        
+        name = vid.replace(".mp4","")     
         if name not in vid_frames_dir_list:
             new_frames_dir = os.path.join(all_vid_frames_dir,name)
-            os.makedirs(new_frames_dir, exist_ok=True) 
-            
-            vid_path = os.path.join(all_vid_dir, vid)
-            
+            os.makedirs(new_frames_dir, exist_ok=True)          
+            vid_path = os.path.join(all_vid_dir, vid)         
             question = name
             video2img(vid_path,new_frames_dir,question)
     print("saved frames to:", all_vid_frames_dir)
@@ -172,23 +134,14 @@ def convert_video_to_frames(video_path):
     # get grid
     frame_folder = all_vid_frames_dir
     os.makedirs(frame_folder+"_grid", exist_ok=True)
-
     grid_folder = frame_folder+"_grid"
-
     for folder in os.listdir(frame_folder):
         video_frames = os.listdir(os.path.join(frame_folder,folder))
-        
-        video_frames.sort(key=lambda x: int(x.split("_")[-1].split('.')[0]))#sort
-        
+        video_frames.sort(key=lambda x: int(x.split("_")[-1].split('.')[0]))#sort  
         grid = [video_frames[0],video_frames[3],video_frames[6],video_frames[9],video_frames[12],video_frames[15]]
         grid_image = merge_grid(os.path.join(frame_folder,folder), grid)
         grid_image.save(grid_folder+"/"+folder+".jpg")
     print("saved grid images to:", grid_folder)
-
-def image_parser(args):
-    out = args.image_file.split(args.sep)
-    return out
-
 
 def load_image(image_file):
     if image_file.startswith("http") or image_file.startswith("https"):
@@ -234,23 +187,20 @@ def eval_model(args):
     with open(os.path.join(output_path, f'interaction_score.csv'), 'w', newline='') as csvfile: #TODO
         # Create a CSV writer
         csv_writer = csv.writer(csvfile)
-        # Write the header row (optional)
         initial = "The provided image arranges key frames from a video in a grid view. Describe the video within 20 words, focusing on the interactions between characters or objects visible throughout the frames."
         
-        csv_writer.writerow(["grid_image_name","prompt", 'Score'])
+        csv_writer.writerow(["grid_image_name","prompt", "Score"])
         
         grid_images = [f for f in os.listdir(video_grid_folder_prefix) if f[0].isdigit()]
    
         grid_images.sort(key=lambda x: int(x.split('.')[0]))#sort
         
-
         for i in range(len(grid_images)):
             out = []
             question = []
             grid_image_name = grid_images[i]
             score = []
-            score_total = 0
-            
+            score_total = 0    
             this_prompt = prompts[i]
             
             image_file = [os.path.join(video_grid_folder_prefix,grid_images[i])]
@@ -346,10 +296,7 @@ def eval_model(args):
             else:
                 print('No score found')
             score.append(score_tmp)
-                
-
-                
-            
+    
             if args.forget: 
                 conv.messages.pop()
                 conv.messages.pop()
@@ -357,13 +304,13 @@ def eval_model(args):
                 conv.messages.pop()
             
             # calculate score_total
-
             score_total = score[0]
             print("score for",grid_images[i] , score_total)
-
+            grid_image_name.replace(".jpg", "")
             csv_writer.writerow([grid_image_name, this_prompt, score_total])
             # update csv
             csvfile.flush()
+            
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--model-path", type=str, default="/group/xihuiliu/sky/T2V-Compbench/metric/models/LLaVA/llava-v1.6-34b")
@@ -374,15 +321,13 @@ if __name__ == "__main__":
     parser.add_argument("--top_p", type=float, default=None)
     parser.add_argument("--num_beams", type=int, default=1)
     parser.add_argument("--max_new_tokens", type=int, default=512)
-
     parser.add_argument("--output-path", type=str, default="../csv_output_interaction")
-    parser.add_argument("--read-prompt-file", type=str, default="/group/xihuiliu/sky/T2V-Compbench/prompts/output_prompt_6_2.txt")
-
+    parser.add_argument("--read-prompt-file", type=str, default="../prompts/object interactions.txt")
     parser.add_argument(
         "--video_grid_folder_prefix",
         type=str,
-        # default = "/group/xihuiliu/sky/T2V-Compbench/models/ZeroScope/t2v_5_2_test/t2v_5_2", # video repo path
-        default = "/group/xihuiliu/sky/T2V-Compbench/models/ZeroScope/t2v_2_2_test/t2v_2_2_single/0001.mp4", # single video        help="path to video grid folder",
+        required=True,
+        help="path to video folder or certain video",
     )
     parser.add_argument("--forget", type=bool, default=False, help="if forget, dispose last 2 question's answer")
     args = parser.parse_args()
