@@ -123,10 +123,11 @@ Then, replace the original`dot/dot/utils/options/demo_options.py` by
 - `demo_options.py`
 
 Compute the evaluation metric:
-step 1: `python Grounded-Segment-Anything/motion_binding_seg.py`
 
-step 2: `dot/python motion_binding_foreground.py`
+step 1: ```python Grounded-Segment-Anything/motion_binding_seg.py```
 
-step 3: `dot/python motion_binding_background.py`
+step 2: ```dot/python motion_binding_foreground.py```
 
-step 4: `dot/python process.py`
+step 3: ```dot/python motion_binding_background.py```
+
+step 4: ```dot/python process.py```
