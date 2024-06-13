@@ -112,7 +112,18 @@ After obtaining the official GroundingSAM code, place the following evaluation s
 
 The background and forground segmentation of the 1st frame of the videos will be stored in the `output_motion_binding/` directory.
 
-After obtaining the official DOT code, place the following evaluation scripts in the `dot/` directory, and run them as ordered:
+After obtaining the official DOT code, place the following evaluation scripts in the `dot/` directory:
 
 - `motion_binding_foreground.py`
 - `motion_binding_background.py`
+- `process.py`
+
+Then, replace the original`dot/dot/utils/options/demo_options.py` by 
+
+- `demo_options.py`
+
+Compute the evaluation metric:
+step 1: `python Grounded-Segment-Anything/motion_binding_seg.py`
+step 2: `dot/python motion_binding_foreground.py`
+step 3: `dot/python motion_binding_background.py`
+step 4: `dot/python process.py`
