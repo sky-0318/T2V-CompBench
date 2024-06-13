@@ -36,6 +36,52 @@ After obtaining the official LLaVA code, place the following evaluation scripts 
 - `action_binding.py`
 - `interaction.py`
 
+Prepare the video repository path (*e.g.*, "../video/dynamic_attr") or a specific video path (*e.g.*, "../video/dynamic_attr/0001.mp4") in the argument `--video_grid_folder_prefix`. Configure the output path with the `--output-path` argument, and the file of prompts or metadata with the `--read-prompt-file` argument. The evaluation codes will automatically convert the video into three different formats (a standard video with 16 frames, frames, and an image grid) and then calculate the score.
+
+##### Consistent Attribute Binding
+
+Prepare the video path for `--video_grid_folder_prefix` and run the following command:
+
+```
+python llava/eval/consistent_attribute.py --video_grid_folder_prefix ../video/consistent_attribute
+```
+
+The output will be a CSV file named "consistent_attr_score.csv" in the "../csv_output_consistent_attr" directory. The video name, prompt, and score for each text-video pair will be recorded in the columns named of "name","prompt", "Score".
+
+##### Dynamic Attribute Binding
+
+Prepare the video path for `--video_grid_folder_prefix` and run the following command:
+
+```
+python llava/eval/dynamic_attribute.py --video_grid_folder_prefix ../video/dynamic_attribute
+```
+
+The output will be a CSV file named "dynamic_attr_score.csv" in the "../csv_output_dynamic_attr" directory. The video name, prompt, and score for each text-video pair will be recorded in the columns named of "name","prompt", "Score".
+
+##### Action Binding
+
+Input the grid format path and run:
+
+```
+python llava/eval/action_binding.py --video_grid_folder_prefix ../video/action_binding
+```
+
+The output will be a CSV file named "action_binding_score.csv" in the "../csv_output_action_binding" directory. The video name, prompt, and score for each text-video pair will be recorded in the columns named of "name","prompt", "Score".
+
+##### Object Interaction
+
+Input the grid format path and run:
+
+```
+python llava/eval/interaction.py --video_grid_folder_prefix ../video/interaction
+```
+
+The output will be a CSV file named "interaction.csv" in the "../csv_output_interaction" directory. The video name, prompt, and score for each text-video pair will be recorded in the columns named of "name","prompt", "Score".
+
+**Evaluate Your Own Videos**
+
+To evaluate your own videos, prepare the evaluation videos and prompt or metadata files similar to the provided examples. Follow the same steps to run the evaluation codes.
+
 ## Detection-based Evaluation (2D spatial relationships and generative numeracy)
 We use GroundingDINO as the detection tool to evaluate the two categories: 2D spatial relationships and generative numeracy.
 #### 1: Install Requirements
