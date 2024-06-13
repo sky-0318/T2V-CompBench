@@ -76,7 +76,9 @@ After obtaining the official Depth Anything code, place the following evaluation
 
 - `run_depth.py`
 
-After obtaining the official GroundingSAM code, place the following evaluation scripts in the `Depth-Anything/` directory:
+The depth images will be stored in the `output_depth/` directory.
+
+After obtaining the official GroundingSAM code, place the following evaluation scripts in the `Grounded-Segment-Anything/` directory:
 
 - `spatial_relationship_3d.py`
   
