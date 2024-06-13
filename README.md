@@ -1,4 +1,10 @@
 # T2V-CompBench
+## T2V-CompBench dataset
+The T2V-CompBench dataset includes 700 prompts from 7 categories, each with 100 prompts. 
+
+Each category is saved in a .txt file in the ```prompts/``` directory.
+
+
 ## MLLM-based Evaluation
 We use LLaVA as the MLLM model to evaluate the four categories: consistent attribute binding, dynamic attribute binding, action binding and object interactions.
 #### 1: Install Requirements
