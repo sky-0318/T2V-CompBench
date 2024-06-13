@@ -368,7 +368,7 @@ def eval_model(args):
                       
                 image_token_se = DEFAULT_IM_START_TOKEN + DEFAULT_IMAGE_TOKEN + DEFAULT_IM_END_TOKEN
                 qs = f"According to the image, evaluate if the image is aligned with the text \'{phrase_0}\' or \'{phrase_1}\'. \
-                    Give a score from 0 to 1, according the criteria: \
+                    Give a score from 0 to 2, according the criteria: \
                     2: the image matches with the text {phrase_0}. \
                     1: the image matches with the text {phrase_1}. \
                     0: the image is not aligned with the two texts totally. \
